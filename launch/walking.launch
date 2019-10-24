@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<launch>
+    <arg name="node_start_delay"   default="20.0"/>    
+    <arg name="node_start_delay2"      default="17.0"/> 
+
+
+    
+    <param name="offset_file_path"         value="$(find op3_tuning_module)/data/offset.yaml"/>
+    <param name="robot_file_path"          value="$(find op3_manager)/config/OP3.robot"/>
+    <param name="init_file_path"           value="$(find op3_manager)/config/dxl_init_OP3.yaml"/>
+    <param name="device_name"              value="/dev/ttyUSB0"/>
+    <param name="walking_param_path"       value="$(find op3_walking_module)/config/param.yaml"/>
+    
+
+    <!-- OP3 Manager -->
+    <node pkg="op3_manager" type="op3_manager" name="op3_manager" output="screen">
+   	 <param name="angle_unit" value="30" />
+    </node>
+
+    <!-- OP3 Localization -->
+    <node pkg="op3_localization" type="op3_localization" name="op3_localization" output="screen"/>
+
+    <node pkg="juarez_vision" type="set_mode.py" name="juarez_set_mode" output="screen" launch-prefix="bash -c 'sleep $(arg node_start_delay2); $0 $@' " />
+
+    <node pkg="juarez_vision" type="init.py" name="top_init" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />
+
+    <node pkg="juarez_vision" type="newscript.py" name="juarez_control" output="screen" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />
+
+
+</launch>
